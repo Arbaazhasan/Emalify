@@ -1,9 +1,10 @@
 import express from "express"
-import { messageSend } from "../controller/email.sender.controller.js";
+import { messageSenderController } from "../controller/email.sender.controller.js";
+import upload from "../middleware/multer.js";
 
 const router = express.Router();
 
 
-router.post("/sendmessage", messageSend);
+router.post("/sendmessage", upload.single("attachment"), messageSenderController);
 
 export default router;
