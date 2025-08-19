@@ -25,8 +25,38 @@ export const messageSenderController = asyncCatchHandler(async (req, res, next) 
         },
     });
 
-    const allResults = await Promise.all(
-        receiversArray.map(async (email) => {
+    // const allResults = await Promise.all(
+    //     receiversArray.map(async (email) => {
+    //         const info = await transporter.sendMail({
+    //             from: `"${senderName}" <${senderEmail}>`,
+    //             to: email,
+    //             subject: subject,
+    //             text: message,
+    //             attachments: [
+    //                 {
+    //                     filename: file.originalname,
+    //                     content: file.buffer,
+    //                     contentType: "application/pdf"
+    //                 }
+    //             ]
+    //         });
+    //         console.log("Message sent : ", email, info);
+
+    //         return {
+    //             accepted: info.accepted,
+    //             rejected: info.rejected,
+    //             envelope: info.envelope
+    //         };
+    //     })
+    // );
+
+    let count = 0;
+    const allResults = [];
+
+    for (const email of receiversArray) {
+        try {
+            console.log(`📤 Sending to: ${email}`);
+
             const info = await transporter.sendMail({
                 from: `"${senderName}" <${senderEmail}>`,
                 to: email,
@@ -40,19 +70,31 @@ export const messageSenderController = asyncCatchHandler(async (req, res, next) 
                     }
                 ]
             });
-            console.log("Message sent : ", email, info);
 
-            return {
+            count++;
+            console.log(`✅ Sent to: ${email}   |   ${count} outof ${receiversArray.length}  `);
+
+            allResults.push({
+                email,
                 accepted: info.accepted,
                 rejected: info.rejected,
                 envelope: info.envelope
-            };
-        })
-    );
+            });
 
+        } catch (error) {
+            console.error(`❌ Failed to send to ${email}:`, error.message);
+            allResults.push({
+                email,
+                error: error.message
+            });
+        }
+    }
     res.status(200).json({
         success: true,
-        message: "Message Sent",
+        message: "Message sending process finished",
+        total: receiversArray.length,
+        sent: count,
+        failed: receiversArray.length - count,
         results: allResults,
     });
 });
