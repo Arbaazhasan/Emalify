@@ -72,7 +72,7 @@ export const messageSenderController = asyncCatchHandler(async (req, res, next) 
             });
 
             count++;
-            console.log(`✅ Sent to: ${email}   |   ${count} outof ${receiversArray.length}  `);
+            console.log(`✅ Sent to: ${email}   |   ${count} outof ${receiversArray.length}  \n`);
 
             allResults.push({
                 email,
@@ -97,4 +97,14 @@ export const messageSenderController = asyncCatchHandler(async (req, res, next) 
         failed: receiversArray.length - count,
         results: allResults,
     });
+
+    console.log({
+        success: true,
+        message: "Message sending process finished",
+        total: receiversArray.length,
+        sent: count,
+        failed: receiversArray.length - count,
+        results: allResults,
+
+    })
 });
