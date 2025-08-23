@@ -23,7 +23,7 @@ const Header = () => {
             <div className="navbar-center">
                 <a className="btn btn-ghost text-xl">Emalify</a>
             </div>
-            <div className="navbar-end border-2 border-amber-300 border-solid gap-2">
+            <div className="navbar-end  gap-2">
 
                 <h3 className='cursor-pointer'>arbaazhasan.ah@gmail.com</h3>
                 {/* 
